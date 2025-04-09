@@ -43,7 +43,7 @@ const GraphView: React.FC<Props> = ({ nodes, links }) => {
       .style("opacity", 0);
 
     const node = svg.append("g")
-      .selectAll("circle")
+      .selectAll<SVGCircleElement, NodeData>("circle")
       .data(nodes)
       .join("circle")
       .attr("r", d => {
@@ -58,7 +58,7 @@ const GraphView: React.FC<Props> = ({ nodes, links }) => {
         if (d.type === "problem") return "salmon";
         return "gray";
       })
-      .on("mouseover", (event, d) => {
+      .on("mouseover", (_, d) => {
         tooltip
           .style("opacity", 1)
           .html(`<strong>${d.title ?? d.id}</strong><br/>${d.source ?? ""}`);
@@ -71,13 +71,15 @@ const GraphView: React.FC<Props> = ({ nodes, links }) => {
       .on("mouseout", () => {
         tooltip.style("opacity", 0);
       })
-      .on("click", (event, d) => {
+      .on("click", (_, d) => {
         console.log("Clicked node:", d.id);
       })
-      .call(d3.drag()
+      .call(
+        d3.drag<SVGCircleElement, NodeData>()
         .on("start", dragstarted)
         .on("drag", dragged)
-        .on("end", dragended));
+        .on("end", dragended)
+      );
 
     const label = svg.append("g")
       .selectAll("text")
@@ -126,8 +128,9 @@ const GraphView: React.FC<Props> = ({ nodes, links }) => {
       d.fy = null;
     }
 
-    return () => tooltip.remove(); // Cleanup tooltip
-
+    return () => {
+      tooltip.remove();
+    }
   }, [nodes, links]);
 
   return <svg ref={ref}></svg>;
