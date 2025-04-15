@@ -1,14 +1,22 @@
-export type NodeType = "category" | "algorithm" | "problem";
+export type NodeType = 'category' | 'algorithm' | 'problem';
 
-export interface NodeData {
+export interface Node {
   id: string;
+  name: string;
+  group: string;
   type: NodeType;
-  title: string;
-  source?: string;
-  isGeneral?: boolean;
+  description: string;
+  markdown: string;
 }
 
-export interface LinkData {
+export interface Link {
   source: string;
   target: string;
+  value: number;
 }
+
+export interface Graph {
+  nodes: Node[];
+  links: Link[];
+}
+
